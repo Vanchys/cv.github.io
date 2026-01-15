@@ -1,0 +1,51 @@
+========================================
+  PORTFOLIO 3D - IVAN APOLINAR
+========================================
+
+⚠️ IMPORTANTE: ANTES DE CONTINUAR
+
+Este proyecto requiere Node.js para funcionar.
+
+Si NO tienes Node.js instalado:
+
+1. Descarga Node.js desde: https://nodejs.org/
+   (Recomendado: Versión LTS)
+
+2. Instala Node.js siguiendo el asistente de instalación
+
+3. Reinicia tu terminal después de la instalación
+
+4. Ejecuta uno de estos archivos:
+   - INSTALAR-TODO.bat (más simple)
+   - INSTALAR-TODO.ps1 (más avanzado, requiere permisos)
+
+========================================
+
+OPCIONES DE INSTALACIÓN:
+
+Opción 1 (Recomendada):
+   Doble clic en: INSTALAR-TODO.bat
+
+Opción 2:
+   Abre PowerShell en esta carpeta y ejecuta:
+   .\INSTALAR-TODO.ps1
+
+Opción 3 (Manual):
+   1. Abre una terminal en esta carpeta
+   2. Ejecuta: npm install
+   3. Espera a que termine
+   4. Ejecuta: npm run dev
+
+========================================
+
+DESPUÉS DE INSTALAR:
+
+Para iniciar el portfolio:
+   - Ejecuta: npm run dev
+   - O usa: INICIO-RAPIDO.bat
+
+El portfolio estará disponible en:
+   http://localhost:5173
+
+========================================
+
