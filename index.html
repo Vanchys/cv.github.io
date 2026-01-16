@@ -259,7 +259,7 @@
                 name: "IVAN APOLINAR",
                 initials: "IA",
                 photo: "./Ivan  img.jpeg",
-                title: "Estratega Operativo y Analista de Datos",
+                title: "Analista Data M.B.A",
                 age_location: "Tehuacán, Puebla, México",
                 bio: "Estratega operativo y analista de datos aplicado a negocios, con amplia experiencia en creación, estructuración y escalamiento de proyectos reales en transporte, servicios, comercio y atención al cliente.",
                 email: "vanchysz1@gmail.com",
@@ -670,12 +670,13 @@
         // Elementos de audio
         const bgMusic = new Audio('interestelar.mp3');
         bgMusic.loop = true;
-        bgMusic.volume = 0.5; // Volumen inicial moderado
+        bgMusic.volume = 0.8; // 80% Volumen
 
-        const scrollDownSound = new Audio('1.mp3');
-        const scrollUpSound = new Audio('2.mp3');
-        scrollDownSound.volume = 0.8; // 80% Volumen
-        scrollUpSound.volume = 0.8;   // 80% Volumen
+        // Sonidos invertidos: Down usa 2.mp3, Up usa 1.mp3
+        const scrollDownSound = new Audio('2.mp3');
+        const scrollUpSound = new Audio('1.mp3');
+        scrollDownSound.volume = 0.5; // 50% Volumen
+        scrollUpSound.volume = 0.5;   // 50% Volumen
 
         // Manejo de música de fondo (Autoplay policy fix)
         let musicStarted = false;
