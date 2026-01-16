@@ -274,7 +274,7 @@
                 { id: 'contact', icon: '📧', label: 'Contacto' }
             ],
             about: {
-                main: "Me especializo en convertir ideas en operaciones funcionales: estructuro procesos, asigno personas, implemento sistemas, analizo información y diseño estrategias que permiten que los negocios operen de forma sostenible y semi-automatizada.",
+                main: "Me especializo en convertir ideas en operaciones funcionales: estructuro procesos, asigno roles, implemento sistemas, analizo información y diseño estrategias que permiten que los negocios operen de forma sostenible y semi-automatizada.",
                 secondary: "Soy una persona tranquila, empática y analítica. Mi experiencia en trato directo con clientes y equipos de trabajo me ha permitido desarrollar escucha activa genuina y comprensión de problemas cotidianos, buscando siempre soluciones claras y efectivas.",
                 philosophy: {
                     title: "Filosofía de Trabajo",
@@ -283,33 +283,54 @@
             },
             experience: [
                 { year: "10 Años", description: "Socio Fundador de Smart Transport. Operación general, logística, estructura de rutas, atención a clientes y toma de decisiones estratégicas." },
-                { year: "7 Años", description: "Fundador de Operadora Turística Tehuacán – Oaxaca. Fundador de ruta y gestión operativa." },
+                { year: "7 Años", description: "Fundador de Operadora Turística Tehuacán – Oaxaca. Socio Fundador de ruta con escala en Nochixtlan." },
                 { year: "Actual", description: "Propietario de Tienda de Abarrotes. Administración diaria, ventas, control de personal y operación." },
                 { year: "Previo", description: "Experiencia operativa en ventas y distribución en empresas como Pepsico, Alpura y Big Cola." }
             ],
             skills: [
-                { name: "Análisis de Datos", symbol: "📊", percentage: 95, iconType: "emoji" },
-                { name: "Op. de Negocios", symbol: "⚙️", percentage: 90, iconType: "emoji" },
-                { name: "Inteligencia Artificial", symbol: "🤖", percentage: 85, iconType: "emoji" },
-                { name: "Marketing Digital", symbol: "📈", percentage: 80, iconType: "emoji" },
-                { name: "Excel Avanzado", symbol: "Xls", percentage: 90, iconType: "text" },
-                { name: "Desarrollo No-Code", symbol: "💻", percentage: 75, iconType: "emoji" }
+                { name: "Análisis de Datos", symbol: "📊", percentage: 90, iconType: "emoji" },
+                { name: "Op. de Negocios", symbol: "⚙️", percentage: 85, iconType: "emoji" },
+                { name: "Inteligencia Artificial", symbol: "🤖", percentage: 80, iconType: "emoji" },
+                { name: "Marketing Digital", symbol: "📈", percentage: 75, iconType: "emoji" },
+                { name: "Excel Avanzado", symbol: "Xls", percentage: 70, iconType: "text" },
+                { name: "Desarrollo No-Code", symbol: "💻", percentage: 65, iconType: "emoji" }
             ],
             projects: [
                 {
                     title: "Automatización con IA",
-                    desc: "Scripts con API de Claude para transformar datos y automatizar procesos.",
+                    desc: "Creación de Scripts para transformar datos y automatizar procesos.",
                     tags: ["AI", "Claude API", "Python"],
                     image: "./cla.jpeg"
                 },
                 {
+                    title: "Cyber Punto Com",
+                    desc: "Cadena local de cyber cafés pcs y xbox. Logística, control y manejo de redes.",
+                    tags: ["Business", "Technology", "Management"],
+                    gradient: "from-blue-600 to-cyan-400",
+                    image: "./ptc.jpg"
+                },
+                {
+                    title: "Krocks Buffet",
+                    desc: "El único buffet de comida mexicana en Tehuacán que operaba toda la semana.",
+                    tags: ["Restaurant", "Management", "Service"],
+                    gradient: "from-orange-500 to-red-500",
+                    image: "./kb.jpg"
+                },
+                {
                     title: "Luxor Travel",
-                    desc: "Modelo de negocio escalable con inversión para transporte Federal.",
+                    desc: "Modelo de negocio de inversión y escalable para Transporte Federal.",
                     tags: ["Scalability", "Business Model", "Investment"],
                     image: "./lux.jpg"
                 },
                 {
-                    title: "NuVa Travel",
+                    title: "Smart Transports",
+                    desc: "Agencia de viajes líder entre: Tehuacán, Cuacnopalan, Puebla, México.",
+                    tags: ["Transport", "Logistics", "Strategy"],
+                    gradient: "from-green-500 to-emerald-700",
+                    image: "./smt.jpg"
+                },
+                {
+                    title: "NuVa Drive",
                     desc: "Proyecto de Transporte Local.",
                     tags: ["Logistics", "Strategy", "Management"],
                     image: "./nuv.jpg"
@@ -472,7 +493,13 @@
             // Projects
             const projectItems = portfolioData.projects.map((proj, index) => `
                 <div class="glass-card rounded-2xl overflow-hidden hover-3d reveal-base reveal-zoom" style="transition-delay: ${index * 100}ms; animation-delay: ${Math.random() * 2}s">
-                    <div class="h-48 bg-gradient-to-br ${proj.gradient}"></div>
+                    <div class="h-48 relative overflow-hidden group">
+                        ${proj.image
+                    ? `<img src="${proj.image}" alt="${proj.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">`
+                    : `<div class="w-full h-full bg-gradient-to-br ${proj.gradient}"></div>`
+                }
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-300"></div>
+                    </div>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold text-white mb-2">${proj.title}</h3>
                         <p class="text-gray-400 mb-4">${proj.desc}</p>
