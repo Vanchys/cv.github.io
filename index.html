@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivan Apolinar - Portfolio 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10/dist/framer-motion.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes floatReverse {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(20px) rotate(-5deg);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-reverse {
+            animation: floatReverse 6s ease-in-out infinite;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 15s linear infinite;
+        }
+
+        .hover-3d {
+            transition: transform 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        /* Base Reveal Class */
+        .reveal-base {
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        /* Slide Up (Default) */
+        .reveal-up {
+            transform: translateY(50px);
+        }
+
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Slide From Left */
+        .reveal-left {
+            transform: translateX(-50px);
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Slide From Right */
+        .reveal-right {
+            transform: translateX(50px);
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Zoom In */
+        .reveal-zoom {
+            transform: scale(0.8);
+        }
+
+        .reveal-zoom.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Rotate In */
+        .reveal-rotate {
+            transform: rotate(-5deg) scale(0.9);
+        }
+
+        .reveal-rotate.active {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        @keyframes gentle-float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Continuous float for all cards */
+        .glass-card {
+            animation: gentle-float 6s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff0080, #8000ff, #00bfff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ff0080, #8000ff, #00bfff, #ff0080);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white">
+    <div class="relative w-full min-h-screen overflow-hidden">
+        <!-- Fondo animado -->
+        <div class="fixed inset-0 overflow-hidden z-0">
+            <div id="animated-bg" class="absolute inset-0 opacity-40"></div>
+            <div id="particles" class="absolute inset-0"></div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="fixed top-0 left-0 right-0 h-1 bg-gray-900 z-50">
+            <div id="progress-bar"
+                class="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 transition-all duration-300"
+                style="width: 0%"></div>
+        </div>
+
+        <!-- Navegación -->
+        <nav class="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 w-11/12 max-w-fit">
+            <div id="nav-container"
+                class="flex gap-2 bg-black/60 backdrop-blur-xl rounded-full p-2 border border-white/20 shadow-2xl overflow-x-auto">
+                <!-- Nav items generated by JS -->
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <div id="main-content" class="relative z-10">
+            <!-- Sections generated by JS -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-12 px-8 border-t border-white/10">
+            <div class="max-w-6xl mx-auto text-center">
+                <p class="text-gray-400 mb-4" id="footer-text"></p>
+                <p class="text-gray-500 text-sm">
+                    © <span id="current-year"></span> Todos los derechos reservados
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // --- DATOS DEL PORTAFOLIO (EDITA AQUÍ) ---
+        const portfolioData = {
+            personal: {
+                name: "IVAN APOLINAR",
+                initials: "IA",
+                title: "Diseñador Gráfico Profesional",
+                age_location: "23 años | Ciudad de México, México",
+                bio: "Diseñador gráfico avanzado enfocado en branding, tipografía y diseño de layouts. Competente en la oficina creando los documentos gráficos más innovadores con pasión.",
+                email: "ivan.apolinar@gmail.com",
+                cv_link: "#"
+            },
+            sections: [
+                { id: 'hero', icon: '🏠', label: 'Inicio' },
+                { id: 'about', icon: '👤', label: 'Sobre Mí' },
+                { id: 'experience', icon: '💼', label: 'Experiencia' },
+                { id: 'skills', icon: '⭐', label: 'Habilidades' },
+                { id: 'projects', icon: '📁', label: 'Proyectos' },
+                { id: 'education', icon: '🎓', label: 'Educación' },
+                { id: 'contact', icon: '📧', label: 'Contacto' }
+            ],
+            about: {
+                main: "Soy un diseñador gráfico apasionado por crear experiencias visuales que marquen la diferencia. Con más de 2 años de experiencia profesional, he trabajado en proyectos que van desde branding corporativo hasta diseño editorial.",
+                secondary: "Mi enfoque combina creatividad técnica con una profunda comprensión de las necesidades del cliente, resultando en soluciones innovadoras y visualmente impactantes.",
+                philosophy: {
+                    title: "Filosofía de Trabajo",
+                    description: "Diseño limpio, tipografía cuidadosa y experiencias memorables. Cada proyecto es una oportunidad para aprender y superar límites creativos."
+                }
+            },
+            experience: [
+                { year: "2020", description: "Voluntario en proyecto comunitario para mejorar la calidad de vida en zonas rurales" },
+                { year: "2021", description: "Mejor diseñador del año en equipo de desarrollo web" },
+                { year: "2023", description: "Un año de experiencia como operador en empresa de mensajería express" },
+                { year: "2024", description: "2 años de experiencia como diseñador gráfico profesional" }
+            ],
+            skills: [
+                { name: "Adobe Illustrator", symbol: "Ai", percentage: 95, iconType: "text" },
+                { name: "Adobe Photoshop", symbol: "Ps", percentage: 90, iconType: "text" },
+                { name: "Branding", symbol: "🎨", percentage: 88, iconType: "emoji" },
+                { name: "Tipografía", symbol: "✍️", percentage: 85, iconType: "emoji" },
+                { name: "Layout Design", symbol: "📐", percentage: 92, iconType: "emoji" },
+                { name: "UI/UX", symbol: "💻", percentage: 80, iconType: "emoji" }
+            ],
+            projects: [
+                {
+                    title: "Branding Corporativo",
+                    desc: "Identidad visual completa para empresa tecnológica",
+                    tags: ["Illustrator", "Photoshop", "Branding"],
+                    gradient: "from-pink-500 to-purple-500"
+                },
+                {
+                    title: "Diseño Editorial",
+                    desc: "Revista digital con tipografía personalizada",
+                    tags: ["InDesign", "Illustrator", "Tipografía"],
+                    gradient: "from-purple-500 to-cyan-500"
+                },
+                {
+                    title: "Packaging Design",
+                    desc: "Diseño de empaques para línea de productos",
+                    tags: ["Photoshop", "3D", "Branding"],
+                    gradient: "from-cyan-500 to-pink-500"
+                }
+            ],
+            education: [
+                { period: "2016-2018", school: "Preparatoria José Vasconcelos", degree: "Secundaria y Bachillerato (SEP)", field: "Ciencias Sociales" },
+                { period: "2019-2021", school: "Colegio Nacional de México", degree: "Universidad en Ciudad de México", field: "Diseño Gráfico" },
+                { period: "2022", school: "Instituto Tecnológico", degree: "Ciudad de México, México", field: "Licenciatura en Diseño" }
+            ],
+            contact: {
+                info: [
+                    { icon: "📍", text: "Ciudad de México, México" },
+                    { icon: "📱", text: "+52 55 1234 5678" },
+                    { icon: "✉️", text: "ivan.apolinar@gmail.com" },
+                    { icon: "f", text: "facebook.com/ivanapolinar" },
+                    { icon: "📷", text: "@ivan_apolinar" },
+                    { icon: "📌", text: "pinterest.com/ivanapolinar" }
+                ],
+                hobbies: [
+                    { icon: "✈️", name: "Viajar" },
+                    { icon: "🍳", name: "Cocinar" },
+                    { icon: "🚗", name: "Conducir" },
+                    { icon: "🎨", name: "Diseño" },
+                    { icon: "🎮", name: "Videojuegos" },
+                    { icon: "📷", name: "Fotografía" }
+                ],
+                languages: [
+                    { flag: "🇲🇽", border: "pink-500" },
+                    { flag: "🇺🇸", border: "purple-500" },
+                    { flag: "🇫🇷", border: "cyan-500" },
+                    { flag: "🇩🇪", border: "pink-500" }
+                ]
+            }
+        };
+
+        // --- RENDERIZADO ---
+
+        function renderNav() {
+            const container = document.getElementById('nav-container');
+            container.innerHTML = portfolioData.sections.map(section => `
+                <button onclick="scrollToSection('${section.id}')" class="nav-btn flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 text-gray-400 hover:text-white shrink-0">
+                    <span>${section.icon}</span> <span class="hidden md:inline">${section.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderContent() {
+            const main = document.getElementById('main-content');
+            let html = '';
+
+            // Hero
+            html += `
+                <section id="hero" class="min-h-screen flex items-center justify-center px-8 relative">
+                    <div class="max-w-6xl mx-auto text-center reveal-base reveal-zoom">
+                        <div class="relative inline-block mb-8 mt-40 floating">
+                            <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                            <div class="relative w-64 h-64 rounded-full bg-gradient-to-r from-pink-500 to-cyan-500 p-1">
+                                <div class="w-full h-full rounded-full bg-black flex items-center justify-center text-8xl font-bold gradient-text">
+                                    ${portfolioData.personal.initials}
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="text-7xl md:text-9xl font-bold mb-6 gradient-text animate-pulse">
+                            ${portfolioData.personal.name}
+                        </h1>
+                        <p class="text-3xl md:text-4xl text-purple-300 mb-2 font-light">
+                            ${portfolioData.personal.title}
+                        </p>
+                        <p class="text-lg text-gray-400 mb-4">
+                            ${portfolioData.personal.age_location}
+                        </p>
+                        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+                            ${portfolioData.personal.bio}
+                        </p>
+                        <div class="flex flex-wrap gap-4 justify-center">
+                            <a href="#contact" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full text-white font-semibold shadow-2xl shadow-pink-500/50 hover:scale-105 transition-transform">
+                                📧 Contáctame
+                            </a>
+                            ${portfolioData.personal.cv_link ? `
+                            <a href="${portfolioData.personal.cv_link}" class="flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">
+                                📄 Ver CV
+                            </a>` : ''}
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            // About
+            html += `
+                <section id="about" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-up">Sobre Mí</h2>
+                        <div class="grid md:grid-cols-2 gap-12 items-center">
+                            <div class="glass-card rounded-3xl p-8 hover-3d reveal-base reveal-left">
+                                <p class="text-gray-300 text-lg leading-relaxed mb-4">${portfolioData.about.main}</p>
+                                <p class="text-gray-300 text-lg leading-relaxed mb-6">${portfolioData.about.secondary}</p>
+                                <div class="flex gap-4">
+                                    <a href="#" class="p-4 bg-white/10 rounded-full hover:bg-pink-500 transition-all duration-300 hover:scale-110"><span class="text-2xl">🐙</span></a>
+                                    <a href="#" class="p-4 bg-white/10 rounded-full hover:bg-cyan-500 transition-all duration-300 hover:scale-110"><span class="text-2xl">💼</span></a>
+                                </div>
+                            </div>
+                            <div class="relative reveal-base reveal-right">
+                                <div class="absolute inset-0 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-cyan-500/30 rounded-3xl blur-3xl animate-pulse"></div>
+                                <div class="relative glass-card rounded-3xl p-8">
+                                    <div class="text-5xl mb-4">💻</div>
+                                    <h3 class="text-2xl font-bold text-white mb-4">${portfolioData.about.philosophy.title}</h3>
+                                    <p class="text-gray-300">${portfolioData.about.philosophy.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            // Experience
+            const expItems = portfolioData.experience.map((item, index) => {
+                const animClass = index % 2 === 0 ? 'reveal-left' : 'reveal-right';
+                return `
+                <div class="flex flex-col md:flex-row gap-6 items-start glass-card rounded-2xl p-6 hover-3d reveal-base ${animClass}" style="animation-delay: ${Math.random() * 2}s">
+                    <div class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl font-bold text-lg min-w-[80px] text-center shadow-lg shadow-pink-500/50">
+                        ${item.year}
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed flex-1 pt-2">
+                        ${item.description}
+                    </p>
+                </div>
+            `}).join('');
+
+            html += `
+                <section id="experience" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto w-full">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-zoom">Experiencia y Logros</h2>
+                        <div class="space-y-6">${expItems}</div>
+                    </div>
+                </section>
+            `;
+
+            // Skills
+            const skillItems = portfolioData.skills.map((skill, index) => `
+                <div class="glass-card rounded-2xl p-6 hover-3d reveal-base reveal-rotate" style="transition-delay: ${index * 100}ms; animation-delay: ${Math.random() * 2}s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            ${skill.iconType === 'text'
+                    ? `<span class="text-3xl font-bold gradient-text">${skill.symbol}</span>`
+                    : `<span class="text-3xl">${skill.symbol}</span>`
+                }
+                            <span class="text-xl font-semibold text-white">${skill.name}</span>
+                        </div>
+                        <span class="text-2xl font-bold text-pink-400">${skill.percentage}%</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full" style="width: ${skill.percentage}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            html += `
+                <section id="skills" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto w-full">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-up">Habilidades</h2>
+                        <div class="grid md:grid-cols-2 gap-8">${skillItems}</div>
+                    </div>
+                </section>
+            `;
+
+            // Projects
+            const projectItems = portfolioData.projects.map((proj, index) => `
+                <div class="glass-card rounded-2xl overflow-hidden hover-3d reveal-base reveal-zoom" style="transition-delay: ${index * 100}ms; animation-delay: ${Math.random() * 2}s">
+                    <div class="h-48 bg-gradient-to-br ${proj.gradient}"></div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">${proj.title}</h3>
+                        <p class="text-gray-400 mb-4">${proj.desc}</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${proj.tags.map(tag => `<span class="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            html += `
+                <section id="projects" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto w-full">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-up">Proyectos Destacados</h2>
+                        <div class="grid md:grid-cols-3 gap-8">${projectItems}</div>
+                    </div>
+                </section>
+            `;
+
+            // Education
+            const eduItems = portfolioData.education.map((edu, index) => `
+                <div class="glass-card rounded-2xl p-6 border-l-4 border-pink-500 hover-3d reveal-base reveal-left" style="transition-delay: ${index * 100}ms; animation-delay: ${Math.random() * 2}s">
+                    <div class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg inline-block mb-4 font-bold shadow-lg shadow-pink-500/50">
+                        ${edu.period}
+                    </div>
+                    <h3 class="text-2xl font-bold gradient-text mb-2">${edu.school}</h3>
+                    <p class="text-gray-300 mb-1">${edu.degree}</p>
+                    <p class="text-gray-500 text-sm">${edu.field}</p>
+                </div>
+            `).join('');
+
+            html += `
+                <section id="education" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto w-full">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-up">Educación</h2>
+                        <div class="space-y-6">${eduItems}</div>
+                    </div>
+                </section>
+            `;
+
+            // Contact
+            const contactInfos = portfolioData.contact.info.map(info => `
+                <div class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-pink-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-500/50 shrink-0">
+                        ${info.icon}
+                    </div>
+                    <span class="text-gray-300 break-all">${info.text}</span>
+                </div>
+            `).join('');
+
+            const hobbiesItems = portfolioData.contact.hobbies.map(hobby => `
+                <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-cyan-500/50 transition-all">
+                    <span class="text-2xl">${hobby.icon}</span>
+                    <span class="text-gray-300">${hobby.name}</span>
+                </div>
+            `).join('');
+
+            const langItems = portfolioData.contact.languages.map(lang => `
+                <div class="w-16 h-16 rounded-full border-2 border-${lang.border} flex items-center justify-center text-3xl bg-white/5 hover:scale-125 transition-transform">${lang.flag}</div>
+            `).join('');
+
+            html += `
+                <section id="contact" class="min-h-screen flex items-center justify-center px-8 py-20">
+                    <div class="max-w-6xl mx-auto w-full">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-16 text-center gradient-text reveal-base reveal-up">Contacto</h2>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="glass-card rounded-2xl p-6 reveal-base reveal-left" style="animation-delay: ${Math.random() * 2}s">
+                                <h3 class="text-2xl font-bold text-white mb-6">Información de Contacto</h3>
+                                <div class="space-y-4">${contactInfos}</div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 reveal-base reveal-right" style="transition-delay: 200ms; animation-delay: ${Math.random() * 2}s">
+                                <h3 class="text-2xl font-bold text-white mb-6">Pasatiempos</h3>
+                                <div class="grid grid-cols-2 gap-4 mb-8">${hobbiesItems}</div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-white mb-4">Idiomas</h4>
+                                    <div class="flex gap-4 flex-wrap">${langItems}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            main.innerHTML = html;
+
+            // Re-initialize 3D Hover effects for new elements
+            init3DHover();
+            initScrollReveal();
+        }
+
+        function init3DHover() {
+            document.querySelectorAll('.hover-3d').forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
+                });
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = '';
+                });
+            });
+        }
+
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    } else {
+                        // Remove active class to reset animation when out of view
+                        entry.target.classList.remove('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-base').forEach(el => observer.observe(el));
+        }
+
+        // Initialize
+        renderNav();
+        renderContent();
+        document.getElementById('footer-text').innerText = `Diseñado y desarrollado con ❤️ por ${portfolioData.personal.name}`;
+        document.getElementById('current-year').innerText = new Date().getFullYear();
+
+
+        // Animación de fondo con mouse
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+            updateBackground();
+        });
+
+        function updateBackground() {
+            const bg = document.getElementById('animated-bg');
+            bg.style.background = `
+                radial-gradient(circle at ${50 + mouseX * 20}% ${50 + mouseY * 20}%, #ff0080 0%, transparent 50%),
+                radial-gradient(circle at ${30 - mouseX * 15}% ${70 - mouseY * 15}%, #8000ff 0%, transparent 50%),
+                radial-gradient(circle at ${70 + mouseX * 10}% ${30 + mouseY * 10}%, #00bfff 0%, transparent 50%)
+            `;
+        }
+
+        // Partículas
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 4 + 2 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.background = 'white';
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Barra de progreso
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrolled / maxScroll) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        });
+
+        // Navegación suave
+        window.scrollToSection = function (id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            // Actualizar botones activos
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-gradient-to-r', 'from-pink-500', 'via-purple-500', 'to-cyan-500', 'text-white');
+                btn.classList.add('text-gray-400');
+            });
+        }
+
+        updateBackground();
+    </script>
+</body>
+
+</html>
